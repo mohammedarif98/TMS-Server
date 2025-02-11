@@ -6,7 +6,7 @@ import Auth from "../models/authModel.js";
 export const authenticateUser = async (req, res, next) => {
   try {
     // Retrieve token from HttpOnly cookie or Authorization header
-    const token = req.cookies["access-token"] || req.headers["authorization"]?.split(" ")[1];
+    const token = req.cookies["jwt-token"] || req.headers["authorization"]?.split(" ")[1];
     if (!token) return next(new HttpError("You are not logged in! Please log in.", 401));
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_TOKEN);
