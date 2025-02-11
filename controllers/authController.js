@@ -1,5 +1,5 @@
 import Auth from "../models/authModel.js";
-import HttpError from "../utils/httpError.js";
+import HttpError from "../utils/HttpError.js";
 import { generateToken } from "../utils/jwt.js";
 
 
