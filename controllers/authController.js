@@ -1,7 +1,8 @@
-import HttpError from "../utils/httpError.js";
 import Auth from "../models/authModel.js";
+import HttpError from "../utils/httpError.js";
 import { generateToken } from "../utils/jwt.js";
-// import bcrypt from "bcrypt";
+
+
 
 export const registration = async(req, res, next) => {
     try{
