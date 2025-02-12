@@ -20,12 +20,12 @@ export const registration = async(req, res, next) => {
 
         const user = await Auth.create({ username, email, password });
 
-        const { password: userpassword, ...rest } = user.toObject();
+        const { password: _, ...userData } = user.toObject();
 
         return res.status(201).json({
             status: "success",
             message: "User registered successfully",
-            user: rest
+            user: userData
         });
     }catch(error){
         next(error);
@@ -58,10 +58,11 @@ export const login = async(req, res, next) => {
         const token = generateToken(user._id, user.role);
 
         res.cookie("jwt-token", token, {
-            expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax",
+            // domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined
         });
       
         res.status(200).json({
@@ -78,24 +79,17 @@ export const login = async(req, res, next) => {
 
 export const logout = (req, res, next) => {
     try {
-        if (!req.cookies || !req.cookies["jwt-token"]) {
-            return res.status(400).json({
-                status: "fail",
-                message: "No active session found",
-            });
-        }
-
         res.clearCookie("jwt-token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", 
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax",
         });
 
-        return res.status(200).json({
+        res.status(200).json({
             status: "success",
             message: "Logged out successfully",
         });
     } catch (error) {
-        next(error); 
+        next(error);
     }
 };

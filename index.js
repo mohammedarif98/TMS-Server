@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from 'dotenv';
 import connectDB from "./config/dbConnect.js";
 import logger from 'morgan';
+import helmet from "helmet"
 import cors from 'cors'
 import globalErrorHandler from "./utils/errorHandler.js";
 import authRoutes from './routes/authRoutes.js'
@@ -17,6 +18,7 @@ const  app = express();
 
 // Middleware setup
 app.use(logger('dev'));
+app.use(helmet());
 app.use(cors({ 
     origin: process.env.CLIENT_URL,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
