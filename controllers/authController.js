@@ -77,7 +77,7 @@ export const login = async(req, res, next) => {
 }
 
 
-export const logout = (req, res, next) => {
+export const logout = async(req, res, next) => {
     try {
         res.clearCookie("jwt-token", {
             httpOnly: true,
@@ -93,3 +93,37 @@ export const logout = (req, res, next) => {
         next(error);
     }
 };
+
+
+export const getAllUsers = async(req, res, next) => {
+    try{
+        const users = await Auth.find().select("-password");
+        res.status(200).json({
+            status: "success",
+            message: "Get all users data", 
+            data: users.length, users
+        })
+    }catch(error){
+        next(error.message)
+        console.log(error.message);
+    }
+}
+
+
+export const getProfile = async(req, res, next) => {
+    try{
+        // const {userId} = req.params;
+        const userId = req.user.id;
+        const user = await Auth.findById(userId).select("-passwprd");
+        if(!user) return next(new HttpError("user not found", 404));
+
+        res.status(200).json({
+            status: "success",
+            message: "user data get Successfully",
+            data: user
+        }) 
+    }catch(error){   
+        next(error.message)
+        console.log(error.message);
+    }
+}
